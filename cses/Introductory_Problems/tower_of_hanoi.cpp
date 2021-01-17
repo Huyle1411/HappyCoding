@@ -9,11 +9,7 @@ void solve(int n, int source=1, int dest=3) {
         ans.push_back({source, dest});
         return;
     }
-    int middle = 1;
-    for(;middle<4; ++middle) {
-        if(middle!=source && middle!=dest)
-            break;
-    }
+    int middle = source^dest;
     solve(n-1, source, middle);
     ans.push_back({source, dest});
     solve(n-1, middle, dest);
