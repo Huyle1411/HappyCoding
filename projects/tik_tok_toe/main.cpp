@@ -2,9 +2,8 @@
 
 int main()
 {
-    UserInterface ui(10, 10);
-    ui.enterMove();
-    ui.enterMove();
+    UserInterface ui;
+    ui.run();
 
     return 0;
 }

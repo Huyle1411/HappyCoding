@@ -3,7 +3,7 @@
 
 #include "board.h"
 #include "../controller/gameplay.h"
-#include "../controller/myTypeDef.h"
+#include "../common/myTypeDef.h"
 
 class UserInterface
 {
@@ -12,19 +12,23 @@ public:
     UserInterface(int height, int width);
     ~UserInterface();
 
+    void run();
+
     void registerCallbackfn();
     static void onActionValid(void *puser, void *data);
     static void onActionFail(void *puser, void *data);
     static void onActionNextTurn(void *puser, void *data);
+    static void onActionPlayerWin(void *puser, void *data);
 
+    void displayMenu();
+    void launchGame(bool isMultiplayer = false);
 
     void draw(Coordinate_t &point);
-    void enterMove();
+    void enterMove(ePlayerTurn turn);
 
 private:
     board *m_board;
     gameplay *m_gameplay;
-    ePlayerTurn m_playerTurn;
 };
 
 #endif // USERINTERFACE_H

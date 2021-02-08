@@ -5,7 +5,8 @@ enum eCallback
 {
     ON_ACTION_VALID = 0,
     ON_ACTION_FAILED,
-    ON_ACTION_NEXT_MOVE,
+    ON_ACTION_NEXT_TURN,
+    ON_ACTION_PLAYER_WIN,
     ON_CALLBACK_MAX
 };
 
@@ -19,8 +20,8 @@ enum ePlayerTurn
 
 struct Coordinate_t
 {
-    int x;
-    int y;
+    int row;
+    int col;
     ePlayerTurn playerTurn;
 };
 

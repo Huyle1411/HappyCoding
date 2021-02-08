@@ -6,7 +6,7 @@
 #include <string>
 using namespace std;
 
-#include "../controller/myTypeDef.h"
+#include "../common/myTypeDef.h"
 
 class board
 {

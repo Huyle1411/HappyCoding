@@ -11,16 +11,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #)
 set(SOURCE
    main.cpp
-#   controller/callback.cpp
    controller/gameplay.cpp
    ui/userinterface.cpp
    ui/board.cpp
 )
 set(HEADERS
     common/singleton.h
-#    controller/callback.h
+    common/myTypeDef.h
     controller/gameplay.h
-    controller/myTypeDef.h
     ui/userinterface.h
     ui/board.h
 )

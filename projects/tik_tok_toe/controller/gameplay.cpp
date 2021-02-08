@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
 #include "gameplay.h"
 using namespace std;
@@ -8,11 +9,12 @@ gameplay::gameplay()
 
 }
 
-gameplay::gameplay(int height, int width) : m_height(height), m_width(width)
+gameplay::gameplay(int height, int width, bool isMultiPlayer) :
+    m_height(height), m_width(width), m_isMultiPlayer(isMultiPlayer)
 {
     m_listcb = vector<CallbackItem_t*>(ON_CALLBACK_MAX, NULL);
     m_gridNumber = vector<vector<int>>(m_height, vector<int>(m_width, 0));
-    m_isMultiPlayer = false;
+    m_rule = 3;
 }
 
 gameplay::~gameplay()
@@ -53,37 +55,108 @@ int gameplay::playerMove(Coordinate_t point)
         notify(ON_ACTION_FAILED, &point);
         return -1;
     }
-    m_gridNumber[point.x][point.y] = point.playerTurn;
+    m_gridNumber[point.row][point.col] = point.playerTurn;
     notify(ON_ACTION_VALID, &point);
     //check win
+    checkWin(point);
 
-    //next move
-    nextMove(point);
     return 0;
 }
 
-int gameplay::nextMove(Coordinate_t point)
+int gameplay::nextMove(ePlayerTurn turn)
 {
-    if(point.playerTurn == PLAYER_TURN_NONE) {
+    if(turn == PLAYER_TURN_NONE) {
         //game is not start
         return -1;
     }
-    if(point.playerTurn == PLAYER_1_TURN)
-        point.playerTurn = (m_isMultiPlayer ? PLAYER_2_TURN : PLAYER_BOT_TURN);
+    if(turn == PLAYER_1_TURN)
+        turn = (m_isMultiPlayer ? PLAYER_2_TURN : PLAYER_BOT_TURN);
     else
-        point.playerTurn = PLAYER_1_TURN;
+        turn = PLAYER_1_TURN;
 
-    if(point.playerTurn != PLAYER_BOT_TURN)
-        notify(ON_ACTION_NEXT_MOVE, &point);
+    if(turn != PLAYER_BOT_TURN)
+        notify(ON_ACTION_NEXT_TURN, &turn);
     return 0;
+}
+
+void gameplay::checkWin(Coordinate_t point)
+{
+    int cnt = 0;
+    int low, high, turn = point.playerTurn;
+
+    // check vertical
+    low = max(0, point.row - m_rule + 1);
+    high = min(m_height - 1, point.row + m_rule - 1);
+    if(high - low >= m_rule - 1) {
+        for(int i = 0; i < m_rule && (low + i < m_height); ++i)
+            cnt += (m_gridNumber[low + i][point.col] == turn);
+        int cur = low + m_rule - 1;
+        while(cur <= high) {
+            if(cur != low + m_rule - 1)
+                cnt = cnt + (m_gridNumber[cur][point.col] == turn)
+                      - (m_gridNumber[cur - m_rule][point.col] == turn);
+            if(cnt == m_rule) {
+                notify(ON_ACTION_PLAYER_WIN, &point.playerTurn);
+                return;
+            }
+            ++cur;
+        }
+    }
+
+    // check horizon
+    cnt = 0;
+    low = max(0, point.col - m_rule + 1);
+    high = min(m_width - 1, point.col + m_rule - 1);
+    if(high - low >= m_rule - 1) {
+        for(int i = 0; i < m_rule && (low + i < m_width); ++i)
+            cnt += (m_gridNumber[point.row][low + i] == turn);
+        int cur = low + m_rule - 1;
+        while(cur <= high) {
+            if(cur != low + m_rule - 1)
+                cnt = cnt + (m_gridNumber[point.row][cur] == turn)
+                      - (m_gridNumber[point.row][cur - m_rule] == turn);
+            if(cnt == m_rule) {
+                notify(ON_ACTION_PLAYER_WIN, &point.playerTurn);
+                return;
+            }
+            ++cur;
+        }
+    }
+
+    // check main diagonal
+    cnt = 0;
+    int moveDown = min(point.row - max(0, point.row - m_rule + 1),
+                       point.col - max(0, point.col - m_rule + 1));
+    int moveUp = min(min(m_height - 1, point.row + m_rule - 1) - point.row,
+                     min(m_width - 1, point.col + m_rule - 1) - point.col);
+    int lowRow = point.row - moveDown, lowCol = point.col - moveDown;
+    int highRow = point.row + moveUp, highCol = point.col + moveUp;
+    if(moveDown + moveUp >= m_rule - 1) {
+        for(int i = 0; i < m_rule; ++i)
+            cnt += (m_gridNumber[lowRow + i][lowCol + i] == turn);
+        int curRow = lowRow + m_rule - 1, curCol = lowCol + m_rule - 1;
+        while(curRow <= highRow && curCol <= highCol) {
+            if(curRow != lowRow + m_rule - 1)
+                cnt = cnt + (m_gridNumber[curRow][curCol] == turn)
+                      - (m_gridNumber[curRow - m_rule][curCol - m_rule] == turn);
+            if(cnt == m_rule) {
+                notify(ON_ACTION_PLAYER_WIN, &point.playerTurn);
+                return;
+            }
+            ++curRow;
+            ++curCol;
+        }
+    }
+
+    nextMove(point.playerTurn);
 }
 
 bool gameplay::checkValidMove(Coordinate_t point)
 {
-    if(point.x < LOWER_BOUND || point.y < LOWER_BOUND
-            || point.x >= m_height || point.y >= m_width)
+    if(point.row < LOWER_BOUND || point.col < LOWER_BOUND
+            || point.row >= m_height || point.col >= m_width)
         return false;
-    if(m_gridNumber[point.x][point.y] != 0)
+    if(m_gridNumber[point.row][point.col] != 0)
         return false;
     return true;
 }

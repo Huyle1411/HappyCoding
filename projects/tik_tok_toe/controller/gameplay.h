@@ -3,7 +3,7 @@
 
 #include <vector>
 using namespace std;
-#include "myTypeDef.h"
+#include "../common/myTypeDef.h"
 
 const int LOWER_BOUND = 0;
 
@@ -26,7 +26,7 @@ class gameplay
 {
 public:
     gameplay();
-    gameplay(int height, int width);
+    gameplay(int height, int width, bool isMultiPlayer);
     ~gameplay();
 
     int registerCallback(fnCallback func, void *puser, eCallback type);
@@ -36,7 +36,8 @@ public:
 
 private:
     bool checkValidMove(Coordinate_t point);
-    int nextMove(Coordinate_t point);
+    int nextMove(ePlayerTurn turn);
+    void checkWin(Coordinate_t point);
 
 private:
     vector<CallbackItem_t *> m_listcb;
@@ -44,6 +45,7 @@ private:
     int m_height;
     int m_width;
     bool m_isMultiPlayer;
+    int m_rule;
 };
 
 #endif // GAMEPLAY_H

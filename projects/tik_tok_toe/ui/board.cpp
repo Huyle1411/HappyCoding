@@ -14,7 +14,7 @@ board::board(int boardHeight, int boardWidth)
 void board::displayBoard(Coordinate_t &point)
 {
     char c = (point.playerTurn == PLAYER_1_TURN ? 'X' : 'O');
-    m_gridUI[1 + point.y * 2][3 + point.x * 5] = c;
+    m_gridUI[1 + point.row * 2][3 + point.col * 5] = c;
     draw();
 }
 
