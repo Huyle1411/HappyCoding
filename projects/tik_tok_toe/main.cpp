@@ -3,7 +3,11 @@
 int main()
 {
     UserInterface ui;
-    ui.run();
+    while(1) {
+        ui.run();
+        if(ui.isRunning() == false)
+            break;
+    }
 
     return 0;
 }

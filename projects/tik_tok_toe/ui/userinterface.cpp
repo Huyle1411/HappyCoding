@@ -6,16 +6,18 @@ UserInterface::UserInterface()
 {
     m_board = new board();
     m_gameplay = new gameplay();
+    m_isRunning = true;
 }
 
 UserInterface::~UserInterface()
 {
-    delete m_board;
+
 }
 
 void UserInterface::run()
 {
     //default win by 3 consecutive
+    system("clear");
     m_settingRule = 3;
     displayMenu();
 }
@@ -78,6 +80,9 @@ void UserInterface::displayMenu()
         cin >> rule;
         m_settingRule = rule;
         break;
+    case 4:
+        release();
+        break;
     }
 }
 
@@ -117,4 +122,16 @@ void UserInterface::enterMove(ePlayerTurn turn)
     cin >> point.col;
     point.playerTurn = turn;
     m_gameplay->playerMove(point);
+}
+
+void UserInterface::release()
+{
+    delete m_board;
+    delete m_gameplay;
+    m_isRunning = false;
+}
+
+bool UserInterface::isRunning() const
+{
+    return m_isRunning;
 }

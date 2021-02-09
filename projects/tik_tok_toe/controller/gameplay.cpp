@@ -11,7 +11,10 @@ gameplay::gameplay()
 
 gameplay::~gameplay()
 {
-
+    cout << __FUNCTION__ << " destructor of gameplay\n";
+    for(vector<CallbackItem_t*>::iterator ptrIte = m_listcb.begin(); ptrIte != m_listcb.end(); ++ptrIte)
+        delete *ptrIte;
+    m_listcb.clear();
 }
 
 void gameplay::setupConfig(int boardHeight, int boardWidth, bool isMulti, int ruleWin)

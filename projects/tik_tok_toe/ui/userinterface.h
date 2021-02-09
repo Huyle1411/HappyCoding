@@ -25,10 +25,16 @@ public:
     void draw(Coordinate_t &point);
     void enterMove(ePlayerTurn turn);
 
+    bool isRunning() const;
+
+private:
+    void release();
+
 private:
     board *m_board;
     gameplay *m_gameplay;
     int m_settingRule;
+    bool m_isRunning;
 };
 
 #endif // USERINTERFACE_H
