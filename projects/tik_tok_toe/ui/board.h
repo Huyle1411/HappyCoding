@@ -13,12 +13,11 @@ class board
 public:
     board();
 
-    board(int boardHeight, int boardWidth);
+    void init(int boardHeight, int boardWidth);
     void displayBoard(Coordinate_t &point);
     void draw();
 
 private:
-    void init();
     string square();
 
 private:

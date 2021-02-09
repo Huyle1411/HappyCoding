@@ -1,13 +1,11 @@
 #include <cstring>
+#include <cctype>
 #include "userinterface.h"
 
 UserInterface::UserInterface()
 {
-
-}
-
-UserInterface::UserInterface(int height, int width)
-{
+    m_board = new board();
+    m_gameplay = new gameplay();
 }
 
 UserInterface::~UserInterface()
@@ -17,6 +15,8 @@ UserInterface::~UserInterface()
 
 void UserInterface::run()
 {
+    //default win by 3 consecutive
+    m_settingRule = 3;
     displayMenu();
 }
 
@@ -63,7 +63,7 @@ void UserInterface::onActionPlayerWin(void *puser, void *data)
 void UserInterface::displayMenu()
 {
     int option;
-    cout << "[1] Multiplayer     [2] Play with bot     [3] Quit\n";
+    cout << "[1] Multiplayer     [2] Play with bot     [3] Setting     [4]Quit\n";
     cin >> option;
     switch(option) {
     case 1:
@@ -73,6 +73,10 @@ void UserInterface::displayMenu()
         launchGame();
         break;
     case 3:
+        cout << "Number of consecutive marks to win: ";
+        int rule;
+        cin >> rule;
+        m_settingRule = rule;
         break;
     }
 }
@@ -85,8 +89,8 @@ void UserInterface::launchGame(bool isMultiplayer)
     cout << "Enter number of column: ";
     cin >> width;
     system("clear");
-    m_board = new board(height, width);
-    m_gameplay = new gameplay(height, width, isMultiplayer);
+    m_board->init(height, width);
+    m_gameplay->setupConfig(height, width, isMultiplayer, m_settingRule);
     registerCallbackfn();
     enterMove(PLAYER_1_TURN);
 }

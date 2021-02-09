@@ -9,7 +9,6 @@ class UserInterface
 {
 public:
     UserInterface();
-    UserInterface(int height, int width);
     ~UserInterface();
 
     void run();
@@ -29,6 +28,7 @@ public:
 private:
     board *m_board;
     gameplay *m_gameplay;
+    int m_settingRule;
 };
 
 #endif // USERINTERFACE_H

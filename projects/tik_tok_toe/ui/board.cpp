@@ -2,13 +2,7 @@
 
 board::board()
 {
-    std::cout << "Construct board class \n";
-}
-
-board::board(int boardHeight, int boardWidth)
-    : m_height(boardHeight), m_width(boardWidth)
-{
-    init();
+    m_gridUI.clear();
 }
 
 void board::displayBoard(Coordinate_t &point)
@@ -18,10 +12,10 @@ void board::displayBoard(Coordinate_t &point)
     draw();
 }
 
-void board::init()
+void board::init(int boardHeight, int boardWidth)
 {
-    m_gridUI.clear();
-    m_gridNumber = vector<vector<int>>(m_height, vector<int>(m_width, 0));
+    m_height = boardHeight;
+    m_width = boardWidth;
     int total = m_width * 5 + 2;
     OUTLINE = string(total, '|') + '\n';
     for (int i = 0; i < m_width; ++i)

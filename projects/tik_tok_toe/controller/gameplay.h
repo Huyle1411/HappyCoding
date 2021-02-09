@@ -26,9 +26,9 @@ class gameplay
 {
 public:
     gameplay();
-    gameplay(int height, int width, bool isMultiPlayer);
     ~gameplay();
 
+    void setupConfig(int boardHeight, int boardWidth, bool isMulti, int ruleWin);
     int registerCallback(fnCallback func, void *puser, eCallback type);
     int notify(eCallback type, void *data);
 
